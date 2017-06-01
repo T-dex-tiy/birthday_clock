@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Custom Prompt</title>
+    <style media="screen">
+      body{
+        font-family: Arial;
+      }
+      .dialog{
+        position: absolute;
+        left: 50%;
+        top: -30%;
+        transform: translateX(-50%), translateY(-50%);
+        width: 400px;
+        background: #fff;
+        padding:10px;
+        border: 2px solid #ddd;
+        box-shadow: 1px 1px 5px 1px #ccc;
+        border-radius: 10px;
+        opacity: 1;
+        transition: all 0.3% linear 0%;
+        z-index: 2;
+      }
+      .diaHeader{
+        padding:10px;
+        font-weight: bold;
+        background:#575755;
+        color: #f6f7f8;
+      }
+      .diabody{
+        padding: 10px;
+        line-height:30px;
+      }
+      .inputStyle{
+        border: none;
+        outline: none;
+        border: 1px solid #ddd;
+        width: 375px;
+        height: 30px;
+        font-size: 20px;
+      }
+      .inputStyle:focus{
+        box-shadow: inset 0 0 10px 3px #f6f6f6;
+      }
+      .disFoot{
+        text-align: center;
+        background: #f5f5f2;
+        padding: 3px 0;
+      }
+      a{
+        display:inline-block;
+        width: 100px;
+        border: 1px solid #ccc;
+        border-radius:10px;
+        cursor: pointer;
+        vertical-align: middle;
+        box-shadow: 2px 2px 4px 0 #ccc;
+      }
+      a:active{
+        box-shadow: inset 2px 2px 4px 0;
+        color:#666;
+      }
+      .freeze-layer{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        z-index:1;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="freezeLayer" class="freeze-layer" style="display:none">
+    </div>
+    <button onclick="validateNumber(prompt('Enter Any Number'));">Default</button>
+    <button onclick="CustomPrompt.show('Enter Any Number', validateNumber);">Custom</button>
+    <div id="result"></div>
+    <div id="dialogCont" class="dialog">
+      <div class="diaHeader">
+        <div id="dis-header">
+          Enter the date</div>
+      </div>
+      <div class="disBody">
+        <div id="Message"></div>
+        <input id="dateInput" type="text" class="inputStyle">
+      </div>
+      <div class="disFoot">
+      <a onclick="CustomPrompt.enter();">Enter</a>
+      <a onclick="CustomPrompt.cancel();">Cancel</a>
+      </div>
+    </div>
+    <script type="text/javascript">
+     function validateNumber(number){
+       var msg ='';
+       if(number != null){
+         if(isNaN(number)){
+           msg= 'Put a number in me';
+         }else{
+           msg= (number %2 == 0) ? 'Even Number': 'Odd Number';
+         }
+       }else{
+         msg= 'You cancelled the action'
+       }
+       document.getElementById('result').textContent = msg;
+     }
+     var CustomPrompt = new function(){
+       this.dateInput = document.getElementById('#dateInput');
+
+       this.show= function(msg, callback){
+         var dlg = document.getElementById('dialogCont');
+         dlg.style.top = '30%';
+         dlg.style.opacity = 1;
+         var dlgMessage = dlg.querySelector('#Message');
+         dlgMessage.textContent = msg;
+         dateInput.focus();
+         dateInput.value='';
+         this.callback = callback;
+        document.getElementById('freeze-layer').style.display='';
+       };
+       this.enter = function(){
+         this.callback(dateInput.value);
+         this.close();
+       }
+       this.cancel = function(){
+         this.callback(null);
+         this.close();
+       }
+       this.close = function(){
+         var dlg = document.getElementById('dialogCont');
+         dlg.style.top = '-30%';
+         dlg.style.opacity = 0;
+         document.getElementById('freeze-layer').style.display='none';
+       }
+     }
+
+    </script>
+
+  </body>
+</html>

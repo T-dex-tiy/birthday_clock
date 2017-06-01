@@ -4,28 +4,29 @@
     <meta charset="utf-8">
     <title>It's the FINAL COUNTDOWN!</title>
     <link rel="stylesheet" href="./style/styles.css">
-    <!-- /*<style type ="text/css">
-      body {
-        background: #f6f6f6;
-      }
 
-      .countdownContainer {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translateX(-50%) translateY(-50%);
-        text-align: center;
-        background: #ddd;
-        border: 1px solid #999;
-        padding:10px;
-        box-shadow: 0 0 5px 3px #ccc;
-      }
-      .info{
-        font-size: 80px;
-      }*/ -->
-    </style>
   </head>
   <body>
+    <div id="freezeLayer" class="freeze-layer" style="display:none">
+    </div>
+    <button onclick="CustomPrompt.show('Enter Any Number', validateNumber);">Custom</button>
+    <div id="result"></div>
+    <div id="dialogCont" class="dialog">
+      <div class="diaHeader">
+        <div id="dis-header">
+          Enter the date</div>
+      </div>
+      <div class="disBody">
+        <div id="Message"></div>
+        <input id="dayInput" type="text" class="inputStyle" placeholder="Enter Day"><input id="monthInput" type="text" class="inputStyle" placeholder="Enter Numerical Month(ie 01=January)">  <input id="yearInput" type="text" class="inputStyle" placeholder="Enter Year">
+      </div>
+      <div class="disFoot">
+      <a onclick="CustomPrompt.enter();">Enter</a>
+      <a onclick="CustomPrompt.cancel();">Cancel</a>
+      </div>
+    </div>
+<!--Line Break  -->
+
     <table class="countdownContainer">
       <tr>
         <td colspan = "4">Countdown</td>
@@ -44,9 +45,61 @@
       </tr>
     </table>
     <script type="text/javascript">
+    function validateNumber(number){
+      var msg ='';
+      if(number != null){
+        if(isNaN(number)){
+          msg= 'Put a number in me';
+        }else{
+          msg= [dayInput.value, monthInput.value, yearInput.value]
+        }
+      }
+      document.getElementById('result').textContent = msg;
+    }
+    var CustomPrompt = new function(){
+      this.dayInput = document.getElementById('#dayInput');
+      this.monthInput = document.getElementById('#monthInput');
+      this.yearInput = document.getElementById('#yearInput');
+
+      this.show= function(msg, callback){
+        var dlg = document.getElementById('dialogCont');
+        dlg.style.top = '30%';
+        dlg.style.opacity = 1;
+        var dlgMessage = dlg.querySelector('#Message');
+        dlgMessage.textContent = msg;
+        dayInput.value='';
+        monthInput.value='';
+        yearInput.value='';
+        this.callback = callback;
+       document.getElementById('freeze-layer').style.display='';
+      };
+      this.enter = function(){
+        this.callback(dayInput.value, monthInput.value , yearInput.value);
+        this.close();
+      }
+      this.cancel = function(){
+        this.callback(null);
+        this.close();
+      }
+      this.close = function(){
+        var dlg = document.getElementById('dialogCont');
+        dlg.style.top = '30%';
+        dlg.style.opacity = 0;
+        document.getElementById('freeze-layer').style.display='none';
+      }
+    }
+
+    // Break
+
+
+
        function countdown(){
          var now = new Date();
-         var eventDate = new Date(2017, 7, 22);
+         var eventDate = new Date(yearInput.value, (monthInput.value-1), dayInput.value);
+         console.log(monthInput.value);
+
+         console.log("current event:",eventDate);
+         console.log("now:",now);
 
          var currentTime = now.getTime();
          var eventTime = eventDate.getTime();
